@@ -3,6 +3,7 @@ import { Player } from './actors/player';
 import { Resources } from './resources';
 import { RandomLevel } from './scenes/random-level';
 import { Color } from 'excalibur';
+import { TiledLevel } from './scenes/tiled-level';
 
 class Game extends ex.Engine {
   constructor() {
@@ -27,7 +28,7 @@ class Game extends ex.Engine {
 }
 
 const game = new Game();
-const levelOne = new RandomLevel(game);
+const levelOne = new TiledLevel(game); //new RandomLevel(game);
 const player = new Player();
 
 levelOne.add(player);

@@ -10,10 +10,10 @@ export class Player extends ex.Actor {
     this.body.collider.type = ex.CollisionType.Active;
     this.width = 25;
     this.height = 25;
-    this.pos.x = 0;
-    this.pos.y = 0;
+    this.pos.x = 50;
+    this.pos.y = 50;
     this.color = new ex.Color(255, 255, 255);
-    this.body.useCircleCollider(9)
+    this.body.useCircleCollider(7)
     // this.body.useBoxCollision();
   }
 
