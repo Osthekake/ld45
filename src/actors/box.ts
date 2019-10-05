@@ -7,19 +7,18 @@ export class Box extends ex.Actor {
     constructor(x: number, y: number, texture: Texture) {
         const ypos = (texture.height - 12.5) / texture.height;
         super({
-            collisionType: ex.CollisionType.Fixed,
             anchor: new ex.Vector(0.5, ypos),
-            x,
-            y,
+            pos: new ex.Vector(x, y),
             // z: y
         });
+        this.body.collider.type = ex.CollisionType.Fixed;
         this.addDrawing(texture);
-        this.setWidth(25);
-        this.setHeight(25);
+        this.width = 25;
+        this.height = 25;
     }
 
     onInitialize() {
-        this.setZIndex(this.y);
+        this.setZIndex(this.pos.y);
     }
 
     onPreUpdate(engine: ex.Engine, delta) {

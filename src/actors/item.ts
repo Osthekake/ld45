@@ -1,12 +1,12 @@
 import * as ex from 'excalibur';
-import { Texture } from 'excalibur';
+import { Texture, Vector } from 'excalibur';
 
-export class Tile extends ex.Actor {
+export class Item extends ex.Actor {
     constructor(x: number, y: number, texture: Texture) {
+        const ypos = (texture.height - 12.5) / texture.height;
         super({
-            anchor: new ex.Vector(0.5, 0.5),
-            pos: new ex.Vector(x, y),
-            // z: y
+            anchor: new ex.Vector(0.5, ypos),
+            pos: new Vector(x, y)
         });
         this.body.collider.type = ex.CollisionType.Passive;
         this.addDrawing(texture);
@@ -15,7 +15,6 @@ export class Tile extends ex.Actor {
     }
 
     onInitialize() {
-        this.setZIndex(-Infinity);
+        this.setZIndex(this.anchor.y);
     }
-
 }

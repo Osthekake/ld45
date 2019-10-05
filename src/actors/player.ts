@@ -6,15 +6,14 @@ type direction = 'north' | 'south' | 'east' | 'west';
 
 export class Player extends ex.Actor {
   constructor() {
-    super({
-      collisionType: ex.CollisionType.Active,
-    });
-    this.setWidth(25);
-    this.setHeight(25);
-    this.x = 0;
-    this.y = 0;
+    super( );
+    this.body.collider.type = ex.CollisionType.Active;
+    this.width = 25;
+    this.height = 25;
+    this.pos.x = 0;
+    this.pos.y = 0;
     this.color = new ex.Color(255, 255, 255);
-    this.body.useCircleCollision(9)
+    this.body.useCircleCollider(9)
     // this.body.useBoxCollision();
   }
 
@@ -39,7 +38,7 @@ export class Player extends ex.Actor {
   }
 
   onPostUpdate(engine, delta) {
-    this.setZIndex(this.y);
+    this.setZIndex(this.pos.y);
   }
   
   onPreDraw(ctx, delta) {

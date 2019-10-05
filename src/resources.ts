@@ -6,6 +6,7 @@ let Resources = {
     Drop: new ex.Texture(require('./images/drop.png')),
     Tile: new ex.Texture(require('./images/stonetile.png')),
     Pillar: new ex.Texture(require('./images/pillar.png')),
+    Box: new ex.Texture(require('./images/box.png')),
 }
 
 export { Resources }
