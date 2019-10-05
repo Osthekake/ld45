@@ -15,7 +15,11 @@ class Game extends ex.Engine {
     });
     this.canvas.style.width = '800px';
     this.canvas.style.height = '800px';
-    this.ctx.imageSmoothingEnabled = false
+    this.canvas.style['image-rendering'] = '-moz-crisp-edges';
+    this.canvas.style['image-rendering'] = '-webkit-crisp-edges';
+    this.canvas.style['image-rendering'] = 'pixelated';
+    this.canvas.style['image-rendering'] = 'crisp-edges';
+    this.ctx.imageSmoothingEnabled = false;
     // console.log(this.canvasHeight);
   }
 
