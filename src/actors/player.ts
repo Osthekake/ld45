@@ -1,25 +1,31 @@
 import * as ex from 'excalibur';
 import { Resources } from '../resources';
 import { SpriteSheet } from 'excalibur';
+import { Pickup } from './pickup';
+import { InventoryScreen } from './inventory-screen';
+import { ItemUsable } from './item-usable';
 
 type direction = 'north' | 'south' | 'east' | 'west';
 
 export class Player extends ex.Actor {
+  pickupable: Pickup;
+  interactable: ItemUsable;
   constructor() {
     super( );
-    this.body.collider.type = ex.CollisionType.Active;
     this.width = 25;
     this.height = 25;
     this.pos.x = 50;
     this.pos.y = 50;
     this.color = new ex.Color(255, 255, 255);
     this.body.useCircleCollider(7)
-    // this.body.useBoxCollision();
+    this.body.collider.type = ex.CollisionType.Active;
+    this.inventory = new InventoryScreen();
   }
 
   speed = 100;
   facing: direction = 'south';
   facingSprites: SpriteSheet;
+  inventory: InventoryScreen;
 
   onInitialize(engine) {
     const facingSprites = new ex.SpriteSheet(Resources.Vampire, 5, 4, 25, 25);
@@ -33,8 +39,12 @@ export class Player extends ex.Actor {
     this.addDrawing('east.walk', facingSprites.getAnimationBetween(engine, 16, 20, 125));
   } 
   
-  onPreUpdate(engine, delta) {
-    this.handleInput(engine);
+  onPreUpdate(engine: ex.Engine, delta) {
+    if (this.inventory.isOpen) {
+      this.inventory.handleInput(engine);
+    } else {
+      this.handleInput(engine);
+    }
   }
 
   onPostUpdate(engine, delta) {
@@ -49,7 +59,20 @@ export class Player extends ex.Actor {
     }
   }
 
-  private handleInput(engine: any) {
+  private handleInput(engine: ex.Engine) {
+    if (engine.input.keyboard.wasPressed(ex.Input.Keys.Space)) {
+      if (this.pickupable) {
+        this.inventory.add(this.pickupable.asInventoryItem());
+        this.inventory.show(this, 'view');
+        this.pickupable.kill();
+      } else if (this.interactable) {
+        this.inventory.target = this.interactable;
+        this.inventory.show(this, 'select');
+      } else {
+        this.inventory.show(this, 'view');
+      }
+    }
+
     if (engine.input.keyboard.isHeld(ex.Input.Keys.A) || engine.input.keyboard.isHeld(ex.Input.Keys.Left)) {
       this.vel.x = -this.speed;
       this.facing = 'west';

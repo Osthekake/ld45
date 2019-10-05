@@ -1,7 +1,6 @@
 import * as ex from 'excalibur';
 import { Player } from './actors/player';
 import { Resources } from './resources';
-import { RandomLevel } from './scenes/random-level';
 import { Color } from 'excalibur';
 import { TiledLevel } from './scenes/tiled-level';
 
@@ -39,7 +38,18 @@ for (let key in Resources) {
   loader.addResource(Resources[key]);
 }
 
+export let FONT: ex.SpriteFont;
+
 game.start(loader).then(() => {
+  FONT = new ex.SpriteFont(
+    Resources.Font,
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:?!-_\' "\\/<>()@',
+    false,
+    8,
+    10,
+    4,
+    7
+  );
   game.goToScene('levelOne');
   game.currentScene.camera.strategy.elasticToActor(player, 0.7, 0.2);
 });

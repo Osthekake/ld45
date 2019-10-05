@@ -7,6 +7,9 @@ let Resources = {
     Tile: new ex.Texture(require('./images/stonetile.png')),
     Pillar: new ex.Texture(require('./images/pillar.png')),
     Box: new ex.Texture(require('./images/box.png')),
+    Font: new ex.Texture(require('./fonts/my-font-light.png')),
+    Inventory: new ex.Texture(require('./images/inventory.png')),
+    InventoryCursor: new ex.Texture(require('./images/target.png')),
 }
 
 export { Resources }

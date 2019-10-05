@@ -6,9 +6,8 @@ export class Tile extends ex.Actor {
         super({
             anchor: new ex.Vector(0.5, 0.5),
             pos: new ex.Vector(x, y),
-            // z: y
         });
-        this.body.collider.type = ex.CollisionType.Passive;
+        this.body.collider.type = ex.CollisionType.PreventCollision;
         this.addDrawing(texture);
         this.width = 25;
         this.height = 25;

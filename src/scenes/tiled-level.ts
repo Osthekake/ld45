@@ -2,6 +2,8 @@ import * as ex from 'excalibur';
 import { Box } from '../actors/box';
 import { Resources } from '../resources';
 import { Tile } from '../actors/tile';
+import { Pickup as Pickup } from '../actors/pickup';
+import { ItemUsable } from '../actors/item-usable';
 
 export type tileFactory = (x: number, y: number) => ex.Actor;
 export type tileLegend = { [key: string]: tileFactory};
@@ -13,6 +15,8 @@ export class TiledLevel extends ex.Scene {
   public onInitialize(engine: ex.Engine) {}
   public onActivate() {
     this.load(this.myTiles, this.legend);
+    this.add(new Pickup('Box', 75, 75, Resources.Box));
+    this.add(new ItemUsable('Analyze-a-tron', 50, 125, Resources.Crate));
   }
   public onDeactivate() {}
 
@@ -23,7 +27,7 @@ export class TiledLevel extends ex.Scene {
             const key = row[x];
             const factory = legend[key];
             if (!factory) {
-                console.log(`missing legend entry for key ${key}, at coords ${x}, ${y} in tilemap.`)
+                console.log(`Missing legend entry for key '${key}', at coords ${x}, ${y} in tilemap.`)
             } else {
                 const tile = factory(x * TILE_WIDTH, y * TILE_HEIGHT);
                 this.add(tile);
