@@ -2,6 +2,9 @@ import * as ex from 'excalibur';
 
 let Resources = {
     Crate: new ex.Texture(require('./images/crate2.png')),
+    Analyzer: new ex.Texture(require('./images/lyzer.png')),
+    Computer: new ex.Texture(require('./images/puter.png')),
+    Cable: new ex.Texture(require('./images/cable.png')),
     Vampire: new ex.Texture(require('./images/vampire.png')),
     Drop: new ex.Texture(require('./images/drop.png')),
     Tile: new ex.Texture(require('./images/stonetile.png')),

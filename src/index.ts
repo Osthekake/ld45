@@ -9,7 +9,7 @@ class Game extends ex.Engine {
     super({ 
       width: 200, 
       height: 200, 
-      backgroundColor: Color.DarkGray
+      backgroundColor: Color.Black
       // displayMode: ex.DisplayMode.FullScreen,
     });
     this.canvas.style.width = '800px';
@@ -27,7 +27,7 @@ class Game extends ex.Engine {
 }
 
 const game = new Game();
-const levelOne = new TiledLevel(game); //new RandomLevel(game);
+const levelOne = new TiledLevel(game);
 const player = new Player();
 
 levelOne.add(player);

@@ -4,6 +4,7 @@ import { Resources } from '../resources';
 import { Tile } from '../actors/tile';
 import { Pickup as Pickup } from '../actors/pickup';
 import { ItemUsable } from '../actors/item-usable';
+import { Conversable } from '../actors/conversable';
 
 export type tileFactory = (x: number, y: number) => ex.Actor;
 export type tileLegend = { [key: string]: tileFactory};
@@ -16,7 +17,8 @@ export class TiledLevel extends ex.Scene {
   public onActivate() {
     this.load(this.myTiles, this.legend);
     this.add(new Pickup('Box', 75, 75, Resources.Box));
-    this.add(new ItemUsable('Analyze-a-tron', 50, 125, Resources.Crate));
+    this.add(new ItemUsable('Analyze-a-tron', 50, 125, Resources.Analyzer));
+    this.add(new Conversable('Computer', '<space> use Computer', 100, 125, Resources.Computer));
   }
   public onDeactivate() {}
 
@@ -38,15 +40,17 @@ export class TiledLevel extends ex.Scene {
   }
 
   myTiles = tiles`
-    XXXXDXXXX
+    ###XDX
+    XXXX_XXXX
     X_______X
     X___XXX_X
-    X_______X
-    X_______D
-    X___XP__X
-    X_______X
-    X___P___X
-    XXXXXXXXX
+    X_______XXXXXXX
+    X__C__________X
+    X_______XXXXX_XXX
+    X_______X_______X
+    X___P___X_______X
+    XXXXXXXXX_______X
+    ########XXXXXXXXX
   `;
 
   legend: tileLegend = {
@@ -60,9 +64,15 @@ export class TiledLevel extends ex.Scene {
         // todo: this should be a door
         return new Box(x, y, Resources.Pillar);
       },
+      C: (x, y) => {
+        return new Tile(x, y, Resources.Cable);
+      },
       P: (x, y) => {
         return new Box(x, y, Resources.Pillar);
       },
+      '#': () => {
+        return null;
+      }
   }
 }
  
