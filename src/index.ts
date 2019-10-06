@@ -3,6 +3,7 @@ import { Player } from './actors/player';
 import { Resources } from './resources';
 import { Color } from 'excalibur';
 import { TiledLevel } from './scenes/tiled-level';
+import { ApartmentLevel } from './scenes/apartment/apartment-level';
 
 class Game extends ex.Engine {
   constructor() {
@@ -27,13 +28,21 @@ class Game extends ex.Engine {
 }
 
 const game = new Game();
-const levelOne = new TiledLevel(game);
+const levelOne = new ApartmentLevel(game);
 const player = new Player();
 
 levelOne.spawn(player);
 game.add('levelOne', levelOne);
 
 let loader = new ex.Loader();
+
+loader.backgroundColor = "white";
+
+loader.startButtonFactory = () => {
+  let myButton = document.createElement('button');
+  myButton.textContent = 'Start game';
+  return myButton;
+};
 for (let key in Resources) {
   loader.addResource(Resources[key]);
 }
@@ -42,7 +51,7 @@ export let FONT: ex.SpriteFont;
 
 game.start(loader).then(() => {
   FONT = new ex.SpriteFont(
-    Resources.Font,
+    Resources.FontBitmap,
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:?!-_\' "\\/<>()@',
     false,
     8,

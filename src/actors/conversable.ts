@@ -1,9 +1,7 @@
 import * as ex from 'excalibur';
-import { Texture, Actor, Label, Vector } from 'excalibur';
+import { Texture, Label } from 'excalibur';
 import { Box } from './box';
-import { FONT } from '..';
 import { Player } from './player';
-import { InventoryItem } from './inventory/inventory-item';
 import { HelpText } from './help-text';
 
 export class Conversable extends HelpText {

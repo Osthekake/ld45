@@ -90,7 +90,6 @@ export class InventoryScreen extends UIActor {
     }
 
     private adjustPosition(item: InventoryItem, index: number) {
-        console.log('adjusting position of ', item.name, index);
         item.pos.x = (index % INVENTORY_COLS) * INVENTORY_COL_WIDTH;
         item.pos.y = Math.floor(index / INVENTORY_COLS) * INVENTORY_ROW_HEIGHT;
         item.pos = item.pos.add(INVENTORY_TOP_LEFT);

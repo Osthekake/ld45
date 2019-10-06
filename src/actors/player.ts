@@ -5,7 +5,7 @@ import { Pickup } from './pickups/pickup';
 import { InventoryScreen } from './inventory/inventory-screen';
 import { ItemUsable } from './item-usable';
 import { Interactable } from './interactable';
-import { InfoScreen } from './Info-screen';
+import { InfoScreen } from './info-screen';
 
 type direction = 'north' | 'south' | 'east' | 'west';
 
@@ -28,6 +28,7 @@ export class Player extends ex.Actor {
   facingSprites: SpriteSheet;
   inventory: InventoryScreen;
   info: InfoScreen;
+  control: boolean = true;
 
   onInitialize(engine) {
     const facingSprites = new ex.SpriteSheet(Resources.Vampire, 5, 4, 25, 25);
@@ -48,7 +49,7 @@ export class Player extends ex.Actor {
       this.inventory.handleInput(engine);
     } else if(this.info.isOpen) {
       this.info.handleInput(engine);
-    } else {
+    } else if(this.control) {
       this.handleInput(engine);
     }
   }

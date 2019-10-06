@@ -16,18 +16,10 @@ export type tileLegend = { [key: string]: tileFactory};
 export const TILE_WIDTH = 25;
 export const TILE_HEIGHT = 25;
 
-export class TiledLevel extends ex.Scene {
+export abstract class TiledLevel extends ex.Scene {
   public onInitialize(engine: ex.Engine) {}
   public onActivate() {
     this.load(this.myTiles, this.legend);
-    this.add(new MailOrderBox(100, 50));
-    this.add(new ItemUsable('Analyze-a-tron', 50, 125, Resources.Analyzer));
-    this.add(new Conversable('Computer', '<space> use Computer', 100, 125, Resources.Computer));
-    this.add(new HelpText('<space> to view inventory', 225, 200, null));
-    this.add(new Box(375, 200, Resources.Bed));
-    this.add(new HelpText('4 days until the end of the world', 350, 150, Resources.Calendar));
-    this.add(new HelpText('Books', 250, 50, Resources.Shelf));
-    this.add(new HelpText('More books', 300, 50, Resources.Shelf));
   }
   public onDeactivate() {}
 
@@ -48,40 +40,9 @@ export class TiledLevel extends ex.Scene {
     }
   }
 
-  myTiles = tiles`
-    ###XDX
-    XXXX_XXXXXXXXXX
-    X_____________X
-    X_____X_______X
-    XXXXXXX_______X
-    X__C__________X
-    X_______XXXXXXXXX
-    X_______X_______X
-    X_______________X
-    XXXXXXXXX_______X
-    ########XXXXXXXXX
-  `;
-
-  legend: tileLegend = {
-      X: (x, y) => {
-        return new Box(x, y, Resources.YellowWall);
-      },
-      '_': (x, y) => {
-        return new Tile(x, y, Resources.Tile);
-      },
-      D: (x, y) => {
-        // todo: this should be a door
-        return new Box(x, y, Resources.Pillar);
-      },
-      C: (x, y) => {
-        return new Tile(x, y, Resources.Cable);
-      },
-      '#': () => {
-        return null;
-      }
-  }
-
-  playerSpawn = new Vector(14, 8);
+  abstract myTiles: string[][];
+  abstract legend: tileLegend;
+  abstract playerSpawn: ex.Vector;
 
   spawn(player: Player) {
     player.pos = new Vector(
@@ -92,7 +53,7 @@ export class TiledLevel extends ex.Scene {
   }
 }
  
-function tiles(raw: TemplateStringsArray) {
+export function tiles(raw: TemplateStringsArray) {
     return raw[0].split('\n')
         .map((line) => line.trim())
         .map((line) => Array.from(line))
