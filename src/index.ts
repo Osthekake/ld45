@@ -30,7 +30,7 @@ const game = new Game();
 const levelOne = new TiledLevel(game);
 const player = new Player();
 
-levelOne.add(player);
+levelOne.spawn(player);
 game.add('levelOne', levelOne);
 
 let loader = new ex.Loader();

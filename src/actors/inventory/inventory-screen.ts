@@ -1,11 +1,12 @@
 import * as ex from 'excalibur';
 import { UIActor, Vector, Label } from 'excalibur';
-import { Player } from './player';
+import { Player } from '../player';
 import { InventoryCursor } from './inventory-cursor';
-import { Resources } from '../resources';
-import { InventoryItem } from './intentory-item';
-import { FONT } from '..';
-import { ItemUsable } from './item-usable';
+import { Resources } from '../../resources';
+import { InventoryItem } from './inventory-item';
+import { FONT } from '../..';
+import { ItemUsable } from '../item-usable';
+import { InventoryNothing } from './inventory-list';
 
 export const INVENTORY_COLS = 4
 export const INVENTORY_COL_WIDTH = 50;
@@ -16,7 +17,7 @@ export class InventoryScreen extends UIActor {
     cursor: InventoryCursor;
     isOpen: boolean = false;
     items: InventoryItem[] = [];
-    description: Label;
+    private description: Label[] = [];
     header: Label;
     _mode = 'view';
     target: ItemUsable;
@@ -32,21 +33,34 @@ export class InventoryScreen extends UIActor {
             }
         }
     }
-    constructor() {
+
+    setDescription(description: string) {
+        this.description.forEach(oldLine => {
+            oldLine.kill();
+            super.remove(oldLine);
+        })
+        const lines = description.split('\n');
+        this.description = lines.map((line, index) => {
+            return new Label({
+                pos: new Vector(100, 100 + index * 8),
+                color: ex.Color.Black,
+                spriteFont: FONT,
+                fontUnit: ex.FontUnit.Px,
+                fontSize: 7,
+                text: line,
+                textAlign: ex.TextAlign.Center,
+            });
+        });
+        this.description.forEach(label => {
+            super.add(label);
+        });
+    }
+
+    constructor(private player: Player) {
         super();
         this.addDrawing(Resources.Inventory);
         this.pos.y = 25;
         
-        this.description = new Label({
-            pos: new Vector(100, 100),
-            color: ex.Color.Black,
-            spriteFont: FONT,
-            fontUnit: ex.FontUnit.Px,
-            fontSize: 10,
-            text: 'description',
-            textAlign: ex.TextAlign.Center,
-        });
-
         this.header =  new Label({
             pos: new Vector(100, 9),
             color: ex.Color.Black,
@@ -59,25 +73,37 @@ export class InventoryScreen extends UIActor {
         });
 
         this.cursor = new InventoryCursor(this);
+        this.add(InventoryNothing);
     }
 
     onInitialize() {
         super.add(this.cursor);      
-        super.add(this.description);
         super.add(this.header);
     }
 
     add(item: InventoryItem) {
         const nr = this.items.length;
-        item.pos.x = (nr % INVENTORY_COLS) * INVENTORY_COL_WIDTH;
-        item.pos.y = Math.floor(nr / INVENTORY_COLS) * INVENTORY_ROW_HEIGHT;
-        item.pos = item.pos.add(INVENTORY_TOP_LEFT);
+        this.adjustPosition(item, nr);
         super.add(item);
         this.items.push(item);
         this.cursor.index = nr;
     }
 
-    show(player: Player, mode) {
+    private adjustPosition(item: InventoryItem, index: number) {
+        console.log('adjusting position of ', item.name, index);
+        item.pos.x = (index % INVENTORY_COLS) * INVENTORY_COL_WIDTH;
+        item.pos.y = Math.floor(index / INVENTORY_COLS) * INVENTORY_ROW_HEIGHT;
+        item.pos = item.pos.add(INVENTORY_TOP_LEFT);
+    }
+
+    remove(item: InventoryItem) {
+        super.remove(item);
+        this.items = this.items.filter(i => i !== item);
+        this.items.slice(this.cursor.index).forEach((item, i) => this.adjustPosition(item, this.cursor.index + i - 1));
+        this.cursor.index = this.items.length - 1;
+    }
+
+    show(player: Player, mode: 'view' | 'select') {
         if (mode) { this.mode = mode}
         player.scene.add(this);
         this.isOpen = true;
@@ -114,9 +140,9 @@ export class InventoryScreen extends UIActor {
 
     updateDescription(item: InventoryItem) {
         if (item) {
-            this.description.text = item.description;
+            this.setDescription(item.description);
         } else {
-            this.description.text = 'No items in inventory';
+            this.setDescription('No items in inventory');
         }
     }
 
@@ -124,7 +150,9 @@ export class InventoryScreen extends UIActor {
         if (engine.input.keyboard.wasPressed(ex.Input.Keys.Space)) {
             const item = this.cursor.getItem();
             if (this.target) {
-                this.target.insert(item);
+                this.remove(item);
+                this.target.insert(this.player, item);
+                this.target = null;
             }
             this.hide();
         }

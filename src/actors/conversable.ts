@@ -3,50 +3,16 @@ import { Texture, Actor, Label, Vector } from 'excalibur';
 import { Box } from './box';
 import { FONT } from '..';
 import { Player } from './player';
-import { InventoryItem } from './intentory-item';
+import { InventoryItem } from './inventory/inventory-item';
+import { HelpText } from './help-text';
 
-export class Conversable extends Actor {
+export class Conversable extends HelpText {
     box: Box;
     label: Label;
     name: string;
     constructor(name: string, prompt: string, x: number, y: number, texture: Texture) {
-        super({
-            pos: new Vector(x, y)
-        });
+        super(prompt, x, y, texture);
         this.name = name;
-        this.body.useCircleCollider(20)
-        this.body.collider.type = ex.CollisionType.Passive;
-        this.box = new Box(x, y, texture);
-        this.label = new Label({
-            pos: new Vector(x, y - 10),
-            color: ex.Color.White,
-            spriteFont: FONT,
-            fontSize: 7,
-            visible: false,
-            text: prompt,
-            textAlign: ex.TextAlign.Center,
-        });
-    }
-
-    onInitialize() {
-        this.setZIndex(this.anchor.y);
-        this.scene.add(this.box);
-        this.scene.add(this.label);
-        this.on('collisionstart', (event) => {
-            if (event.other instanceof Player) {
-                // enable interaction and show label
-                this.label.setZIndex(Infinity);
-                this.label.visible = true;
-                event.other.interactable = this;
-            }
-        });
-        this.on('collisionend', (event) => {
-            if (event.other instanceof Player) {
-                // disable interaction and hide label
-                this.label.visible = false;
-                event.other.interactable = null;
-            }
-        });
     }
 
     onPreKill() {
@@ -54,8 +20,7 @@ export class Conversable extends Actor {
         this.box.kill();
     }
 
-    insert(item: InventoryItem) {
+    interact(player: Player) { 
         console.log('Spoke to' + this.name);
-        //todo: stuff here?
     }
 }

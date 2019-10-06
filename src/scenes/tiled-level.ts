@@ -2,9 +2,13 @@ import * as ex from 'excalibur';
 import { Box } from '../actors/box';
 import { Resources } from '../resources';
 import { Tile } from '../actors/tile';
-import { Pickup as Pickup } from '../actors/pickup';
+import { Pickup as Pickup } from '../actors/pickups/pickup';
 import { ItemUsable } from '../actors/item-usable';
 import { Conversable } from '../actors/conversable';
+import { Vector } from 'excalibur';
+import { Player } from '../actors/player';
+import { HelpText } from '../actors/help-text';
+import { MailOrderBox } from '../actors/pickups/mail-order-box';
 
 export type tileFactory = (x: number, y: number) => ex.Actor;
 export type tileLegend = { [key: string]: tileFactory};
@@ -16,9 +20,14 @@ export class TiledLevel extends ex.Scene {
   public onInitialize(engine: ex.Engine) {}
   public onActivate() {
     this.load(this.myTiles, this.legend);
-    this.add(new Pickup('Box', 75, 75, Resources.Box));
+    this.add(new MailOrderBox(100, 50));
     this.add(new ItemUsable('Analyze-a-tron', 50, 125, Resources.Analyzer));
     this.add(new Conversable('Computer', '<space> use Computer', 100, 125, Resources.Computer));
+    this.add(new HelpText('<space> to view inventory', 225, 200, null));
+    this.add(new Box(375, 200, Resources.Bed));
+    this.add(new HelpText('4 days until the end of the world', 350, 150, Resources.Calendar));
+    this.add(new HelpText('Books', 250, 50, Resources.Shelf));
+    this.add(new HelpText('More books', 300, 50, Resources.Shelf));
   }
   public onDeactivate() {}
 
@@ -41,21 +50,21 @@ export class TiledLevel extends ex.Scene {
 
   myTiles = tiles`
     ###XDX
-    XXXX_XXXX
-    X_______X
-    X___XXX_X
-    X_______XXXXXXX
+    XXXX_XXXXXXXXXX
+    X_____________X
+    X_____X_______X
+    XXXXXXX_______X
     X__C__________X
-    X_______XXXXX_XXX
+    X_______XXXXXXXXX
     X_______X_______X
-    X___P___X_______X
+    X_______________X
     XXXXXXXXX_______X
     ########XXXXXXXXX
   `;
 
   legend: tileLegend = {
       X: (x, y) => {
-        return new Box(x, y, Resources.Crate);
+        return new Box(x, y, Resources.YellowWall);
       },
       '_': (x, y) => {
         return new Tile(x, y, Resources.Tile);
@@ -67,16 +76,23 @@ export class TiledLevel extends ex.Scene {
       C: (x, y) => {
         return new Tile(x, y, Resources.Cable);
       },
-      P: (x, y) => {
-        return new Box(x, y, Resources.Pillar);
-      },
       '#': () => {
         return null;
       }
   }
+
+  playerSpawn = new Vector(14, 8);
+
+  spawn(player: Player) {
+    player.pos = new Vector(
+      this.playerSpawn.x * TILE_WIDTH,
+      this.playerSpawn.y * TILE_HEIGHT
+    );
+    this.add(player)
+  }
 }
  
-function tiles(raw:TemplateStringsArray) {
+function tiles(raw: TemplateStringsArray) {
     return raw[0].split('\n')
         .map((line) => line.trim())
         .map((line) => Array.from(line))

@@ -7,6 +7,7 @@ export class InventoryItem extends UIActor {
         this.addDrawing(texture);
         this.width = 25;
         this.height = 25;
+        console.log('new item', description);
     }
 
 }

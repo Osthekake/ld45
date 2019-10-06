@@ -2,7 +2,7 @@ import * as ex from 'excalibur';
 import { Box } from '../actors/box';
 import { Resources } from '../resources';
 import { Tile } from '../actors/tile';
-import { Pickup } from '../actors/pickup';
+import { Pickup } from '../actors/pickups/pickup';
 
 export class RandomLevel extends ex.Scene {
   public onInitialize(engine: ex.Engine) {}

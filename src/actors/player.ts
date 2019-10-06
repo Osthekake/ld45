@@ -1,15 +1,15 @@
 import * as ex from 'excalibur';
 import { Resources } from '../resources';
 import { SpriteSheet } from 'excalibur';
-import { Pickup } from './pickup';
-import { InventoryScreen } from './inventory-screen';
+import { Pickup } from './pickups/pickup';
+import { InventoryScreen } from './inventory/inventory-screen';
 import { ItemUsable } from './item-usable';
+import { Interactable } from './interactable';
+import { InfoScreen } from './Info-screen';
 
 type direction = 'north' | 'south' | 'east' | 'west';
 
 export class Player extends ex.Actor {
-  pickupable: Pickup;
-  interactable: ItemUsable;
   constructor() {
     super( );
     this.width = 25;
@@ -19,13 +19,15 @@ export class Player extends ex.Actor {
     this.color = new ex.Color(255, 255, 255);
     this.body.useCircleCollider(7)
     this.body.collider.type = ex.CollisionType.Active;
-    this.inventory = new InventoryScreen();
+    this.inventory = new InventoryScreen(this);
+    this.info = new InfoScreen(this);
   }
 
   speed = 100;
   facing: direction = 'south';
   facingSprites: SpriteSheet;
   inventory: InventoryScreen;
+  info: InfoScreen;
 
   onInitialize(engine) {
     const facingSprites = new ex.SpriteSheet(Resources.Vampire, 5, 4, 25, 25);
@@ -41,7 +43,11 @@ export class Player extends ex.Actor {
   
   onPreUpdate(engine: ex.Engine, delta) {
     if (this.inventory.isOpen) {
+      this.vel.x = 0;
+      this.vel.y = 0;
       this.inventory.handleInput(engine);
+    } else if(this.info.isOpen) {
+      this.info.handleInput(engine);
     } else {
       this.handleInput(engine);
     }
@@ -58,16 +64,34 @@ export class Player extends ex.Actor {
       this.setDrawing(this.facing + '.stand');
     }
   }
+  private standingOn: Interactable[] = []; 
+
+  standOn(actor: Interactable) {
+    this.standingOn.push(actor);
+  }
+  standOff(actor: Interactable) {
+      this.standingOn = this.standingOn.filter(on => on !== actor);
+  }
+
+  pickup(pickupable: Pickup) {
+    this.inventory.add(pickupable.asInventoryItem());
+    this.inventory.show(this, 'view');
+    pickupable.kill();
+  }
+
+  selectItem(usable: ItemUsable) {
+    this.inventory.target = usable;
+    this.inventory.show(this, 'select');
+  }
+
+  showMsg(msg: string) {
+    this.info.show(this, msg);
+  }
 
   private handleInput(engine: ex.Engine) {
     if (engine.input.keyboard.wasPressed(ex.Input.Keys.Space)) {
-      if (this.pickupable) {
-        this.inventory.add(this.pickupable.asInventoryItem());
-        this.inventory.show(this, 'view');
-        this.pickupable.kill();
-      } else if (this.interactable) {
-        this.inventory.target = this.interactable;
-        this.inventory.show(this, 'select');
+      if (this.standingOn.length > 0) {
+        this.standingOn[0].interact(this);
       } else {
         this.inventory.show(this, 'view');
       }

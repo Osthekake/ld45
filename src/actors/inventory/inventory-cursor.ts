@@ -1,8 +1,8 @@
 import * as ex from 'excalibur';
 import { Vector, UIActor } from 'excalibur';
-import { Resources } from '../resources';
+import { Resources } from '../../resources';
 import { INVENTORY_COLS, INVENTORY_COL_WIDTH, INVENTORY_ROW_HEIGHT, InventoryScreen } from './inventory-screen';
-import { InventoryItem } from './intentory-item';
+import { InventoryItem } from './inventory-item';
 
 export class InventoryCursor extends UIActor {
     _index: number = 0;

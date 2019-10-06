@@ -1,63 +1,65 @@
 import * as ex from 'excalibur';
-import { Texture, Vector, Label, Actor } from 'excalibur';
+import { Texture, Actor, Label, Vector } from 'excalibur';
+import { Box } from './box';
 import { FONT } from '..';
 import { Player } from './player';
-import { InventoryItem } from './intentory-item';
+import { Interactable } from './interactable';
 
-export class Pickup extends Actor {
+export class HelpText extends Actor implements Interactable {
+    box?: Box;
     label: Label;
-    name: string;
-    texture: Texture;
-    constructor(name: string, x: number, y: number, texture: Texture) {
-        const ypos = (texture.height - 12.5) / texture.height;
+    constructor(prompt: string, x: number, y: number, texture?: Texture) {
         super({
-            anchor: new Vector(0.5, ypos),
             pos: new Vector(x, y)
         });
-        this.name = name;
-        this.texture = texture;
+        this.body.useCircleCollider(19)
         this.body.collider.type = ex.CollisionType.Passive;
-        this.body.useCircleCollider(10)
-        this.addDrawing(texture);
-        this.width = 25;
-        this.height = 25;
+        if (texture) {
+            this.box = new Box(x, y, texture);
+        }
         this.label = new Label({
             pos: new Vector(x, y - 10),
             color: ex.Color.White,
             spriteFont: FONT,
             fontSize: 7,
             visible: false,
-            text: `<space> to pick up ${name}`,
+            text: prompt,
             textAlign: ex.TextAlign.Center,
         });
-        this.label.setTextShadow(1, 1, ex.Color.Black);
     }
 
     onInitialize() {
         this.setZIndex(this.anchor.y);
+        if (this.box) {
+            this.scene.add(this.box);
+        }
         this.scene.add(this.label);
         this.on('collisionstart', (event) => {
             if (event.other instanceof Player) {
-                // enable pickup and show label
+                // enable interaction and show label
                 this.label.setZIndex(Infinity);
                 this.label.visible = true;
-                event.other.pickupable = this;
+                event.other.standOn(this);
             }
         });
         this.on('collisionend', (event) => {
             if (event.other instanceof Player) {
-                // disable pickup and hide label
+                // disable interaction and hide label
                 this.label.visible = false;
-                event.other.pickupable = null;
+                event.other.standOff(this);
             }
         });
-    }
-    
-    asInventoryItem(): InventoryItem {
-        return new InventoryItem(this.name, this.name, this.texture)        
     }
 
     onPreKill() {
         this.label.kill();
+        if (this.box) {
+            this.box.kill();
+        }
     }
+
+    interact(player: Player) { 
+        player.inventory.show(player, 'view');
+    }
+
 }
