@@ -8,7 +8,7 @@ let Resources = {
     Screen: new ex.Texture(require('./images/screen.png')),
     Pointer: new ex.Texture(require('./images/pointer.png')),
     Cable: new ex.Texture(require('./images/cable.png')),
-    Scientist: new ex.Texture(require('./images/pixelpersonscientist.png')),
+    Vampire: new ex.Texture(require('./images/vampire.png')),
     Drop: new ex.Texture(require('./images/drop.png')),
     Tile: new ex.Texture(require('./images/stonetile.png')),
     YellowWallCorner: new ex.Texture(require('./images/yellow_wall_corner.png')),

@@ -17,7 +17,7 @@ export class Player extends ex.Actor {
     this.pos.x = 50;
     this.pos.y = 50;
     this.color = new ex.Color(255, 255, 255);
-    this.body.useCircleCollider(9)
+    this.body.useCircleCollider(7)
     this.body.collider.type = ex.CollisionType.Active;
     this.inventory = new InventoryScreen(this);
     this.info = new InfoScreen(this);
@@ -31,15 +31,15 @@ export class Player extends ex.Actor {
   control: boolean = true;
 
   onInitialize(engine) {
-    const facingSprites = new ex.SpriteSheet(Resources.Scientist, 4, 4, 25, 60);
+    const facingSprites = new ex.SpriteSheet(Resources.Vampire, 5, 4, 25, 25);
     this.addDrawing('south.stand', facingSprites.getSprite(0));
-    this.addDrawing('north.stand', facingSprites.getSprite(4));
-    this.addDrawing('west.stand', facingSprites.getSprite(8));
-    this.addDrawing('east.stand', facingSprites.getSprite(12));
-    this.addDrawing('south.walk', facingSprites.getAnimationBetween(engine, 1, 4, 125));
-    this.addDrawing('north.walk', facingSprites.getAnimationBetween(engine, 5, 8, 125));
-    this.addDrawing('west.walk', facingSprites.getAnimationBetween(engine, 9, 12, 125));
-    this.addDrawing('east.walk', facingSprites.getAnimationBetween(engine, 13, 16, 125));
+    this.addDrawing('west.stand', facingSprites.getSprite(5));
+    this.addDrawing('north.stand', facingSprites.getSprite(10));
+    this.addDrawing('east.stand', facingSprites.getSprite(15));
+    this.addDrawing('south.walk', facingSprites.getAnimationBetween(engine, 1, 5, 125));
+    this.addDrawing('west.walk', facingSprites.getAnimationBetween(engine, 6, 10, 125));
+    this.addDrawing('north.walk', facingSprites.getAnimationBetween(engine, 11, 15, 125));
+    this.addDrawing('east.walk', facingSprites.getAnimationBetween(engine, 16, 20, 125));
   } 
   
   onPreUpdate(engine: ex.Engine, delta) {
