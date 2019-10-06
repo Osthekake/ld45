@@ -17,9 +17,9 @@ export class ItemUsable extends HelpText {
     
     interact(player: Player) { 
         if (this.inserted) {
-            player.showMsg('Retrieved ' + this.inserted.name + ' from ' + this.name);
+            player.showMsg('Retrieved ' + this.inserted.name + '\nfrom ' + this.name);
             player.inventory.add(this.inserted);
-            this.inserted = null;
+            this.removeItem();
         } else {
             player.selectItem(this);
             player.inventory.show(player, 'select');
@@ -28,8 +28,11 @@ export class ItemUsable extends HelpText {
     insert(player: Player, item: InventoryItem) {
         this.inserted = item;
         if (item) {
-            player.showMsg('Inserted ' + item.name + ' into ' + this.name);   
-            //todo: stuff here?
+            player.showMsg('Inserted ' + item.name + '\ninto ' + this.name);   
         }
+    }
+    removeItem() {
+        console.log('🎵 removed item');
+        this.inserted = null;
     }
 }

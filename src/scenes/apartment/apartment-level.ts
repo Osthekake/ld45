@@ -8,7 +8,9 @@ import { Box } from '../../actors/box';
 import { Resources } from '../../resources';
 import { Tile } from '../../actors/tile';
 import { Vector } from 'excalibur';
-import { Player } from '../../actors/player';
+import { Computer } from './computer';
+import { AnalyzeATron } from './analyze-a-tron';
+import { BookShelf } from './bookshelf-with-book';
 
 export type tileFactory = (x: number, y: number) => ex.Actor;
 export type tileLegend = { [key: string]: tileFactory};
@@ -21,13 +23,14 @@ export class ApartmentLevel extends TiledLevel {
     super.onActivate();
 
     this.add(new MailOrderBox(100, 50));
-    this.add(new ItemUsable('Analyze-a-tron', 50, 125, Resources.Analyzer));
-    this.add(new Conversable('Computer', '<space> use Computer', 100, 125, Resources.Computer));
+    const computer = new Computer(100, 125);
+    this.add(computer);
+    this.add(new AnalyzeATron(50, 125, computer));
     this.add(new HelpText('<space> to view inventory', 225, 200, null));
     this.add(new Box(375, 200, Resources.Bed));
     this.add(new HelpText('4 days until the end of the world', 350, 150, Resources.Calendar));
     this.add(new HelpText('Books', 250, 50, Resources.Shelf));
-    this.add(new HelpText('More books', 300, 50, Resources.Shelf));
+    this.add(new BookShelf(300, 50));
   }
 
   myTiles = tiles`

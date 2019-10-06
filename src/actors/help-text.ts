@@ -8,6 +8,7 @@ import { Interactable } from './interactable';
 export class HelpText extends Actor implements Interactable {
     box?: Box;
     label: Label;
+    active: boolean = true;
     constructor(prompt: string, x: number, y: number, texture?: Texture) {
         super({
             pos: new Vector(x, y)
@@ -35,14 +36,15 @@ export class HelpText extends Actor implements Interactable {
         }
         this.scene.add(this.label);
         this.on('collisionstart', (event) => {
-            if (event.other instanceof Player) {
+            if (this.active && event.other instanceof Player) {
                 // enable interaction and show label
                 this.label.setZIndex(Infinity);
                 this.label.visible = true;
                 event.other.standOn(this);
+                console.log('🎵 show help');
             }
         });
-        this.on('collisionend', (event) => {
+        this.on(this.active && 'collisionend', (event) => {
             if (event.other instanceof Player) {
                 // disable interaction and hide label
                 this.label.visible = false;

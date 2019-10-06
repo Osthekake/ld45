@@ -102,15 +102,21 @@ export class InventoryScreen extends UIActor {
         this.cursor.index = this.items.length - 1;
     }
 
+    private onClose: () => void;
     show(player: Player, mode: 'view' | 'select') {
         if (mode) { this.mode = mode}
         player.scene.add(this);
+        this.onClose = player.takeControl(this);
         this.isOpen = true;
     }
 
     hide() {
         this.scene.remove(this);
         this.isOpen = false;
+        if (this.onClose) {
+            this.onClose();
+            this.onClose = null;
+        }
     } 
 
     goUp() {

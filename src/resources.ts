@@ -16,6 +16,7 @@ let Resources = {
     YellowWallHorizontal: new ex.Texture(require('./images/yellow_wall_horizontal.png')),
     Pillar: new ex.Texture(require('./images/pillar.png')),
     Box: new ex.Texture(require('./images/box.png')),
+    Book: new ex.Texture(require('./images/book.png')),
     FontBitmap: new ex.Texture(require('./fonts/my-font-light.png')),
     Msg: new ex.Texture(require('./images/msg.png')),
     Inventory: new ex.Texture(require('./images/inventory.png')),

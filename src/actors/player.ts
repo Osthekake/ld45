@@ -6,6 +6,8 @@ import { InventoryScreen } from './inventory/inventory-screen';
 import { ItemUsable } from './item-usable';
 import { Interactable } from './interactable';
 import { InfoScreen } from './info-screen';
+import { Controller } from '../controller';
+import { InventoryItem } from './inventory/inventory-item';
 
 type direction = 'north' | 'south' | 'east' | 'west';
 
@@ -28,7 +30,10 @@ export class Player extends ex.Actor {
   facingSprites: SpriteSheet;
   inventory: InventoryScreen;
   info: InfoScreen;
-  control: boolean = true;
+  private inputStack: Controller[] = [];
+  get control() {
+    return this.inputStack.length === 0;
+  }
 
   onInitialize(engine) {
     const facingSprites = new ex.SpriteSheet(Resources.Vampire, 5, 4, 25, 25);
@@ -43,14 +48,13 @@ export class Player extends ex.Actor {
   } 
   
   onPreUpdate(engine: ex.Engine, delta) {
-    if (this.inventory.isOpen) {
+    if (this.control) {
+      this.handleInput(engine);
+    } else {
+      const inControl = this.inputStack[this.inputStack.length - 1];
       this.vel.x = 0;
       this.vel.y = 0;
-      this.inventory.handleInput(engine);
-    } else if(this.info.isOpen) {
-      this.info.handleInput(engine);
-    } else if(this.control) {
-      this.handleInput(engine);
+      inControl.handleInput(engine);
     }
   }
 
@@ -75,9 +79,13 @@ export class Player extends ex.Actor {
   }
 
   pickup(pickupable: Pickup) {
-    this.inventory.add(pickupable.asInventoryItem());
-    this.inventory.show(this, 'view');
+    this.pickupItem(pickupable.asInventoryItem())
     pickupable.kill();
+  }
+
+  pickupItem(item: InventoryItem){
+    this.inventory.add(item);
+    this.inventory.show(this, 'view');
   }
 
   selectItem(usable: ItemUsable) {
@@ -87,6 +95,11 @@ export class Player extends ex.Actor {
 
   showMsg(msg: string) {
     this.info.show(this, msg);
+  }
+
+  takeControl(controller: Controller) {
+    this.inputStack.push(controller);
+    return () => {this.inputStack = this.inputStack.filter(c => c !== controller)};
   }
 
   private handleInput(engine: ex.Engine) {

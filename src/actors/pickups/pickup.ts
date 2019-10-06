@@ -19,6 +19,7 @@ export class Pickup extends HelpText {
     }
 
     interact(player: Player) { 
+        console.log('🎵 pickup');
         player.pickup(this);
     }
 }

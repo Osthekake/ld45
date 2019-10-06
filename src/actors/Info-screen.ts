@@ -34,9 +34,10 @@ export class InfoScreen extends UIActor {
             super.add(label);
         });
     }
-
+    private onClose: () => void;
     show(player: Player, msg: string) {
         this.setMessage(msg);
+        this.onClose = player.takeControl(this);
         player.scene.add(this);
         this.isOpen = true;
     }
@@ -44,6 +45,10 @@ export class InfoScreen extends UIActor {
     hide() {
         this.scene.remove(this);
         this.isOpen = false;
+        if (this.onClose) {
+            this.onClose();
+            this.onClose = null;
+        }
     } 
 
     handleInput(engine: ex.Engine) {

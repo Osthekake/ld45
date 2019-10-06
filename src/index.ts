@@ -2,7 +2,6 @@ import * as ex from 'excalibur';
 import { Player } from './actors/player';
 import { Resources } from './resources';
 import { Color } from 'excalibur';
-import { TiledLevel } from './scenes/tiled-level';
 import { ApartmentLevel } from './scenes/apartment/apartment-level';
 
 class Game extends ex.Engine {
